@@ -5,10 +5,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import technicalblog.model.Post;
 import technicalblog.model.User;
 import technicalblog.model.UserProfile;
 import technicalblog.service.PostService;
 import technicalblog.service.UserService;
+
+import javax.servlet.http.HttpSession;
+import java.util.List;
 
 @Controller
 public class UserController {
@@ -39,9 +43,10 @@ public class UserController {
     }
 
     @RequestMapping(value = "users/login", method=RequestMethod.POST)
-    public String loginUser(User user) {
+    public String loginUser(User user, HttpSession session) {
         User existingUser = userService.login(user);
         if(existingUser!=null) {
+            session.setAttribute("loggeduser", existingUser);
             return "redirect:/posts";
         }
         else {
@@ -50,8 +55,11 @@ public class UserController {
     }
 
     @RequestMapping(value="users/logout", method=RequestMethod.POST)
-    public String logout(Model model){
-        return "redirect:/";
+    public String logout(Model model, HttpSession session){
+        session.invalidate();
+        List<Post> posts = postService.getAllPosts();
+        model.addAttribute("posts",posts);
+        return  "index";
 
     }
 
