@@ -1,11 +1,24 @@
 package technicalblog.model;
 
+import javax.persistence.*;
 import java.util.Date;
 
+@Entity
+@Table(name = "posts")
 public class Post {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id")
+    private int id;
+
+    @Column(name="title")
     private String title;
+
+    @Column(name="body")
     private String body;
+
+    @Column(name="date")
     private Date date;
 
     public String getTitle() {
